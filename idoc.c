@@ -895,7 +895,6 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
             print_graphic_column_header(fpout, "GS1", labels[record].gs1, "GS1", idoc);
     }
 
-
     print_boolean_record(fpout, "ECREP", labels[record].ecrep, "EC Rep.tif", idoc);
     print_boolean_record(fpout, "EXPDATE", labels[record].expdate, "Expiration Date.tif", idoc);
     print_boolean_record(fpout, "KEEPAWAYHEAT", labels[record].keepawayheat, "KeepAwayHeat.tif", idoc);
