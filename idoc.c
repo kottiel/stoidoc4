@@ -789,64 +789,19 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
     int g_cnt = 1;
     char temp_graphic[MED];
 
-   // strncat(temp_graphic, "Caution.tif", sizeof("Caution.tif"));
-  //  print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].caution, idoc);
     print_graphic0x_record(fpout, &g_cnt, "Caution.tif", labels[record].caution, idoc);
-
-    //strncat(temp_graphic, "ConsultIFU.tif", sizeof("ConsultIFU.tif"));
-    //print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].consultifu, idoc);
     print_graphic0x_record(fpout, &g_cnt, "ConsultIFU.tif", labels[record].consultifu, idoc);
-
-    //strncat(temp_graphic, "Latex.tif", sizeof("Latex.tif"));
-    //print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].latex, idoc);
     print_graphic0x_record(fpout, &g_cnt, "Latex.tif", labels[record].latex, idoc);
-
-    //strncat(temp_graphic, "DoNotUsePakDam.tif", sizeof("DoNotUsePakDam.tif"));
-    //print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].donotusedamaged, idoc);
     print_graphic0x_record(fpout, &g_cnt, "DoNotUsePakDam.tif", labels[record].donotusedamaged, idoc);
-
-    //strncat(temp_graphic, "LatexFree.tif", sizeof("LatexFree.tif"));
-    //print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].latexfree, idoc);
     print_graphic0x_record(fpout, &g_cnt, "LatexFree.tif", labels[record].latexfree, idoc);
-
-    //strlcpy(temp_graphic, "", sizeof(""));
-    //strncat(temp_graphic, "ManInBox.tif", sizeof("ManInBox.tif"));
-    //print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].maninbox, idoc);
     print_graphic0x_record(fpout, &g_cnt, "ManInBox.tif", labels[record].maninbox, idoc);
-
-    //strncat(temp_graphic, "DoNotRe-sterilize.tif", sizeof("DoNotRe-sterilize.tif"));
-    //print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].noresterilize, idoc);
     print_graphic0x_record(fpout, &g_cnt, "DoNotRe-sterilize.tif", labels[record].noresterilize, idoc);
-
-    //strncat(temp_graphic, "Non-sterile.tif", sizeof("Non-sterile.tif"));
-    //print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].nonsterile, idoc);
     print_graphic0x_record(fpout, &g_cnt, "Non-sterile.tif", labels[record].nonsterile, idoc);
-
-    //strlcpy(temp_graphic, "", sizeof(""));
-    //strncat(temp_graphic, "PVC_Free.tif", sizeof("PVC_Free.tif"));
-    //print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].pvcfree, idoc);
     print_graphic0x_record(fpout, &g_cnt, "PVC_Free.tif", labels[record].pvcfree, idoc);
-
-    //strlcpy(temp_graphic, "", sizeof(""));
-    //strncat(temp_graphic, "Reusable.tif", sizeof("REUSABLE.tif"));
-    //print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].reusable, idoc);
     print_graphic0x_record(fpout, &g_cnt, "Reusable.tif", labels[record].reusable, idoc);
-
-    //strncat(temp_graphic, "Do Not Reuse.tif", sizeof("Do Not Reuse.tif"));
-    //print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].singleuseonly, idoc);
     print_graphic0x_record(fpout, &g_cnt, "Do Not Reuse.tif", labels[record].singleuseonly, idoc);
-
-    //strncat(temp_graphic, "SinglePatientUse.tif", sizeof("SinglePatientUse.tif"));
-    //print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].singlepatientuse, idoc);
     print_graphic0x_record(fpout, &g_cnt, "SinglePatientUse.tif", labels[record].singlepatientuse, idoc);
-
-    //strlcpy(temp_graphic, "", sizeof(""));
-    //strncat(temp_graphic, "ElectroSurIFU.tif", sizeof("ElectroSurIFU.tif"));
-    //print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].electroifu, idoc);
     print_graphic0x_record(fpout, &g_cnt, "ElectroSurIFU.tif", labels[record].electroifu, idoc);
-
-    //strncat(temp_graphic, "KeepDry.tif", sizeof("KeepDry.tif"));
-    //print_graphic0x_record(fpout, &g_cnt, temp_graphic, labels[record].keepdry, idoc);
     print_graphic0x_record(fpout, &g_cnt, "KeepDry.tif", labels[record].keepdry, idoc);
 
     /*print_graphic0x_record(fpout, &g_cnt, "Caution.tif", labels[record].caution, idoc);
@@ -939,61 +894,9 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
         else
             print_graphic_column_header(fpout, "GS1", labels[record].gs1, "GS1", idoc);
     }
-    //strlcpy(temp_graphic, prefix, sizeof(prefix));
-    //strlcpy(temp_graphic, "", sizeof(""));
-    //strncat(temp_graphic, "EC Rep.tif", sizeof("EC Rep.tif"));
+
+
     print_boolean_record(fpout, "ECREP", labels[record].ecrep, "EC Rep.tif", idoc);
-
-    strncat(temp_graphic, "Expiration Date.tif", sizeof("Expiration Date.tif"));
-    print_boolean_record(fpout, "EXPDATE", labels[record].expdate, temp_graphic, idoc);
-
-    strncat(temp_graphic, "KeepAwayHeat.tif", sizeof("KeepAwayHeat.tif"));
-    print_boolean_record(fpout, "KEEPAWAYHEAT", labels[record].keepawayheat, temp_graphic, idoc);
-
-    strncat(temp_graphic, "Lot.tif", sizeof("Lot.tif"));
-    print_boolean_record(fpout, "LOTGRAPHIC", labels[record].lotgraphic, temp_graphic, idoc);
-
-    strncat(temp_graphic, "Manufacturer.tif", sizeof("Manufacturer.tif"));
-    print_boolean_record(fpout, "MANUFACTURER", labels[record].manufacturer, temp_graphic, idoc);
-
-    strncat(temp_graphic, "DateofManufacture.tif", sizeof("DateofManufacture.tif"));
-    print_boolean_record(fpout, "MFGDATE", labels[record].mfgdate, temp_graphic, idoc);
-
-    //strlcpy(temp_graphic, prefix, sizeof(prefix));
-    strlcpy(temp_graphic, "", sizeof(""));
-    strncat(temp_graphic, "PHT-DEHP.tif", sizeof("PHT-DEHP.tif"));
-    print_boolean_record(fpout, "PHTDEHP", labels[record].phtdehp, temp_graphic, idoc);
-
-    //strlcpy(temp_graphic, prefix, sizeof(prefix));
-    strlcpy(temp_graphic, "", sizeof(""));
-    strncat(temp_graphic, "PHT-BBP.tif", sizeof("PHT-BBP.tif"));
-    print_boolean_record(fpout, "PHTBBP", labels[record].phtbbp, temp_graphic, idoc);
-
-    //strlcpy(temp_graphic, prefix, sizeof(prefix));
-    strlcpy(temp_graphic, "", sizeof(""));
-    strncat(temp_graphic, "PHT-DINP.tif", sizeof("PHT-DINP.tif"));
-    print_boolean_record(fpout, "PHTDINP", labels[record].phtdinp, temp_graphic, idoc);
-
-    strncat(temp_graphic, "REF.tif", sizeof("REF.tif"));
-    print_boolean_record(fpout, "REFNUMBER", labels[record].refnumber, temp_graphic, idoc);
-
-    strncat(temp_graphic, "REF.tif", sizeof("REF.tif"));
-    print_boolean_record(fpout, "REF", labels[record].ref, temp_graphic, idoc);
-
-    //strlcpy(temp_graphic, prefix, sizeof(prefix));
-    strlcpy(temp_graphic, "", sizeof(""));
-    strncat(temp_graphic, "RX Only.tif", sizeof("RX Only.tif"));
-    print_boolean_record(fpout, "RXONLY", labels[record].rxonly, temp_graphic, idoc);
-
-    strncat(temp_graphic, "Serial Number.tif", sizeof("Serial Number.tif"));
-    print_boolean_record(fpout, "SERIAL", labels[record].serial, temp_graphic, idoc);
-
-    //strlcpy(temp_graphic, prefix, sizeof(prefix));
-    strlcpy(temp_graphic, "", sizeof(""));
-    strncat(temp_graphic, "TeleflexMedical.tif", sizeof("TeleflexMedical.tif"));
-    print_boolean_record(fpout, "TFXLOGO", labels[record].tfxlogo, temp_graphic, idoc);
-
-    /*print_boolean_record(fpout, "ECREP", labels[record].ecrep, "EC Rep.tif", idoc);
     print_boolean_record(fpout, "EXPDATE", labels[record].expdate, "Expiration Date.tif", idoc);
     print_boolean_record(fpout, "KEEPAWAYHEAT", labels[record].keepawayheat, "KeepAwayHeat.tif", idoc);
     print_boolean_record(fpout, "LOTGRAPHIC", labels[record].lotgraphic, "Lot.tif", idoc);
@@ -1006,7 +909,7 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
     print_boolean_record(fpout, "REF", labels[record].ref, "REF.tif", idoc);
     print_boolean_record(fpout, "RXONLY", labels[record].rxonly, "RX Only.tif", idoc);
     print_boolean_record(fpout, "SERIAL", labels[record].serial, "Serial Number.tif", idoc);
-    print_boolean_record(fpout, "TFXLOGO", labels[record].tfxlogo, "TeleflexMedical.tif", idoc);*/
+    print_boolean_record(fpout, "TFXLOGO", labels[record].tfxlogo, "TeleflexMedical.tif", idoc);
 
     print_boolean_column_header(fpout, "SIZELOGO", labels[record].sizelogo, idoc);
 
