@@ -392,6 +392,28 @@ void print_graphic0x_record(FILE *fpout, int *g_cnt, char *graphic_name, unsigne
         fprintf(fpout, "%-30s", "Y");
         print_graphic_path(fpout, graphic_name);
         fprintf(fpout, "\n");
+    } else if (value == 3) {
+        char g_cnt_str[03];
+        char graphic[10] = "GRAPHIC0";
+        char F_graphic_name[LRG] = "F_";
+        print_Z2BTLC01000(fpout, idoc->ctrl_num, idoc->char_seq_number);
+        sprintf(g_cnt_str, "%d", (*g_cnt)++);
+        fprintf(fpout, "%-30s", strcat(graphic, g_cnt_str));
+        fprintf(fpout, "%-30s", "F_Y");
+        strcat(F_graphic_name, graphic_name);
+        print_graphic_path(fpout, F_graphic_name);
+        fprintf(fpout, "\n");
+    }  else if (value == 4) {
+        char g_cnt_str[03];
+        char graphic[10] = "GRAPHIC0";
+        char ISO_graphic_name[LRG] = "ISO_";
+        print_Z2BTLC01000(fpout, idoc->ctrl_num, idoc->char_seq_number);
+        sprintf(g_cnt_str, "%d", (*g_cnt)++);
+        fprintf(fpout, "%-30s", strcat(graphic, g_cnt_str));
+        fprintf(fpout, "%-30s", "ISO_Y");
+        strcat(ISO_graphic_name, graphic_name);
+        print_graphic_path(fpout, ISO_graphic_name);
+        fprintf(fpout, "\n");
     }
 }
 

@@ -137,6 +137,17 @@ int equals_yes(char *field) {
     return ((strcasecmp(field, "Y") == 0) || (strcasecmp(field, "Yes") == 0));
 }
 
+int graphic_type(char *field) {
+    if ((strcasecmp(field, "Y") == 0) || (strcasecmp(field, "Yes") == 0))
+        return 2;
+    else if ((strcasecmp(field, "N") == 0) || (strcasecmp(field, "NO") == 0))
+        return 1;
+    else if ((strcasecmp(field, "F_Y") == 0) || (strcasecmp(field, "F_Yes") == 0))
+        return 3;
+    else if ((strcasecmp(field, "ISO_Y") == 0) || (strcasecmp(field, "ISO_Yes") == 0))
+        return 4;
+
+}
 int equals_no(char *field) {
     return ((strcasecmp(field, "N") == 0) || (strcasecmp(field, "NO") == 0));
 }
@@ -318,10 +329,7 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "CAUTION") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents))
-                    labels[i].caution = 2;
-                else if (equals_no(contents))
-                    labels[i].caution = 1;
+                labels[i].caution = graphic_type(contents);
             }
 
         } else if (strcmp(token, "CAUTIONSTATE") == 0) {
@@ -341,19 +349,13 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "CONSULTIFU") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents))
-                    labels[i].consultifu = 2;
-                else if (equals_no(contents))
-                    labels[i].consultifu = 1;
+                labels[i].consultifu = graphic_type(contents);
             }
 
         } else if (strcmp(token, "CONTAINSLATEX") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents))
-                    labels[i].latex = 2;
-                else if (equals_no(contents))
-                    labels[i].latex = 1;
+                labels[i].latex = graphic_type(contents);
             }
 
         } else if (strcmp(token, "COOSTATE") == 0) {
@@ -381,19 +383,13 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
                 (strcmp(token, "DONOTPAKDAM") == 0)) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents))
-                    labels[i].donotusedamaged = 2;
-                else if (equals_no(contents))
-                    labels[i].donotusedamaged = 1;
+                labels[i].donotusedamaged = graphic_type(contents);
             }
 
         } else if (strcmp(token, "ECREP") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents))
-                    labels[i].ecrep = 2;
-                else if (equals_no(contents))
-                    labels[i].ecrep = 1;
+                labels[i].ecrep = graphic_type(contents);
             }
 
         } else if (strcmp(token, "ECREPADDRESS") == 0) {
@@ -405,19 +401,13 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "ELECTROSURIFU") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents))
-                    labels[i].electroifu = 2;
-                else if (equals_no(contents))
-                    labels[i].electroifu = 1;
+                labels[i].electroifu = graphic_type(contents);
             }
 
         } else if (strcmp(token, "EXPDATE") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents))
-                    labels[i].expdate = 2;
-                else if (equals_no(contents))
-                    labels[i].expdate = 1;
+                labels[i].expdate = graphic_type(contents);
             }
 
         } else if (strcmp(token, "FLGRAPHIC") == 0) {
@@ -429,10 +419,7 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "KEEPAWAYHEAT") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents))
-                    labels[i].keepawayheat = 2;
-                else if (equals_no(contents))
-                    labels[i].keepawayheat = 1;
+                labels[i].keepawayheat = graphic_type(contents);
             }
 
         } else if (strcmp(token, "INSERTGRAPHIC") == 0) {
@@ -463,10 +450,7 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "LATEXFREE") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents))
-                    labels[i].latexfree = 2;
-                else if (equals_no(contents))
-                    labels[i].latexfree = 1;
+                labels[i].latexfree = graphic_type(contents);
             }
 
         } else if (strcmp(token, "LATEXSTATEMENT") == 0) {
@@ -545,10 +529,7 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "LOTGRAPHIC") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents)) {
-                    labels[i].lotgraphic = 2;
-                } else if (equals_no(contents))
-                    labels[i].lotgraphic = 1;
+                labels[i].lotgraphic = graphic_type(contents);
             }
         } else if (strcmp(token, "LTNUMBER") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
@@ -565,10 +546,7 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "MANINBOX") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents))
-                    labels[i].maninbox = 2;
-                else if (equals_no(contents))
-                    labels[i].maninbox = 1;
+                labels[i].maninbox = graphic_type(contents);
             }
         } else if (strcmp(token, "MANUFACTUREDBY") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
@@ -579,34 +557,22 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "MANUFACTURER") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents)) {
-                    labels[i].manufacturer = 2;
-                } else if (equals_no(contents))
-                    labels[i].manufacturer = 1;
+                labels[i].manufacturer = graphic_type(contents);
             }
         } else if (strcmp(token, "MFGDATE") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents)) {
-                    labels[i].mfgdate = 2;
-                } else if (equals_no(contents))
-                    labels[i].mfgdate = 1;
+                labels[i].mfgdate = graphic_type(contents);
             }
         } else if (strcmp(token, "NORESTERILE") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents)) {
-                    labels[i].noresterilize = 2;
-                } else if (equals_no(contents))
-                    labels[i].noresterilize = 1;
+                labels[i].noresterilize = graphic_type(contents);
             }
         } else if (strcmp(token, "NONSTERILE") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents)) {
-                    labels[i].nonsterile = 2;
-                } else if (equals_no(contents))
-                    labels[i].nonsterile = 1;
+                labels[i].nonsterile = graphic_type(contents);
             }
         } else if (strcmp(token, "OLDLABEL") == 0) {
             if (non_SAP_fields)
@@ -653,37 +619,25 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "PHTDEHP") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents)) {
-                    labels[i].phtdehp = 2;
-                } else if (equals_no(contents))
-                    labels[i].phtdehp = 1;
+                labels[i].phtdehp = graphic_type(contents);
             }
 
         } else if (strcmp(token, "PHTBBP") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents)) {
-                    labels[i].phtbbp = 2;
-                } else if (equals_no(contents))
-                    labels[i].phtbbp = 1;
+                labels[i].phtbbp = graphic_type(contents);
             }
 
         } else if (strcmp(token, "PHTDINP") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents))
-                    labels[i].phtdinp = 2;
-                else if (equals_no(contents))
-                    labels[i].phtdinp = 1;
+                labels[i].phtdinp = graphic_type(contents);
             }
 
         } else if (strcmp(token, "PVCFREE") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents))
-                    labels[i].pvcfree = 2;
-                else if (equals_no(contents))
-                    labels[i].pvcfree = 1;
+                labels[i].pvcfree = graphic_type(contents);
             }
         } else if (strcmp(token, "QUANTITY") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
@@ -694,6 +648,8 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "REF") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
+                labels[i].pvcfree = graphic_type(contents);
+
                 if (equals_yes(contents)) {
                     labels[i].ref = 2;
                 } else if (equals_no(contents))
@@ -703,19 +659,13 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "REFNUMBER") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents)) {
-                    labels[i].refnumber = 2;
-                } else if (equals_no(contents))
-                    labels[i].refnumber = 1;
+                labels[i].refnumber = graphic_type(contents);
             }
 
         } else if (strcmp(token, "REUSABLE") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents)) {
-                    labels[i].reusable = 2;
-                } else if (equals_no(contents))
-                    labels[i].reusable = 1;
+                labels[i].reusable = graphic_type(contents);
             }
         } else if (strcmp(token, "REVISION") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
@@ -732,10 +682,7 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "RXONLY") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents)) {
-                    labels[i].rxonly = 2;
-                } else if (equals_no(contents))
-                    labels[i].rxonly = 1;
+                labels[i].rxonly = graphic_type(contents);
             }
 
         } else if (strcmp(token, "SINGLEUSE") == 0) {
