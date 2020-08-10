@@ -435,7 +435,17 @@ void print_boolean_record(FILE *fpout, char *col_name, int value, char *graphic_
         if (value == 2) {
             fprintf(fpout, "%-30s", "Y");
             print_graphic_path(fpout, graphic_name);
-
+        }
+        else if (value == 3) {
+            char F_graphic_name[LRG] = "F_";
+            strcat(F_graphic_name, graphic_name);
+            fprintf(fpout, "%-30s", "F_Y");
+            print_graphic_path(fpout, F_graphic_name);
+        } else if (value == 4) {
+            char ISO_graphic_name[LRG] = "ISO_";
+            strcat(ISO_graphic_name, graphic_name);
+            fprintf(fpout, "%-30s", "ISO_Y");
+            print_graphic_path(fpout, ISO_graphic_name);
         } else {
             fprintf(fpout, "%-30s", "N");
             print_graphic_path(fpout, "blank-01.tif");
@@ -815,14 +825,14 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
     print_graphic0x_record(fpout, &g_cnt, "ConsultIFU.tif", labels[record].consultifu, idoc);
     print_graphic0x_record(fpout, &g_cnt, "Latex.tif", labels[record].latex, idoc);
     print_graphic0x_record(fpout, &g_cnt, "DoNotUsePakDam.tif", labels[record].donotusedamaged, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "LatexFree.tif", labels[record].latexfree, idoc);
+    print_graphic0x_record(fpout, &g_cnt, "Latex Free.tif", labels[record].latexfree, idoc);
     print_graphic0x_record(fpout, &g_cnt, "ManInBox.tif", labels[record].maninbox, idoc);
     print_graphic0x_record(fpout, &g_cnt, "DoNotRe-sterilize.tif", labels[record].noresterilize, idoc);
     print_graphic0x_record(fpout, &g_cnt, "Non-sterile.tif", labels[record].nonsterile, idoc);
     print_graphic0x_record(fpout, &g_cnt, "PVC_Free.tif", labels[record].pvcfree, idoc);
     print_graphic0x_record(fpout, &g_cnt, "Reusable.tif", labels[record].reusable, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "Do Not Reuse.tif", labels[record].singleuseonly, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "SinglePatientUse.tif", labels[record].singlepatientuse, idoc);
+    print_graphic0x_record(fpout, &g_cnt, "SINGLEUSE.tif", labels[record].singleuseonly, idoc);
+    print_graphic0x_record(fpout, &g_cnt, "SinglePatienUse.tif", labels[record].singlepatientuse, idoc);
     print_graphic0x_record(fpout, &g_cnt, "ElectroSurIFU.tif", labels[record].electroifu, idoc);
     print_graphic0x_record(fpout, &g_cnt, "KeepDry.tif", labels[record].keepdry, idoc);
 

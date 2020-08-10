@@ -648,12 +648,7 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "REF") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                labels[i].pvcfree = graphic_type(contents);
-
-                if (equals_yes(contents)) {
-                    labels[i].ref = 2;
-                } else if (equals_no(contents))
-                    labels[i].ref = 1;
+                labels[i].ref = graphic_type(contents);
             }
 
         } else if (strcmp(token, "REFNUMBER") == 0) {
@@ -688,28 +683,19 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "SINGLEUSE") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents)) {
-                    labels[i].singleuseonly = 2;
-                } else if (equals_no(contents))
-                    labels[i].singleuseonly = 1;
+                labels[i].singleuseonly = graphic_type(contents);
             }
 
         } else if (strcmp(token, "SERIAL") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents)) {
-                    labels[i].serial = 2;
-                } else if (equals_no(contents))
-                    labels[i].serial = 1;
+                labels[i].serial = graphic_type(contents);
             }
 
         } else if (strcmp(token, "SINGLEPATIENTUSE") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents)) {
-                    labels[i].singlepatientuse = 2;
-                } else if (equals_no(contents))
-                    labels[i].singlepatientuse = 1;
+                labels[i].singlepatientuse = graphic_type(contents);
             }
 
         } else if (strcmp(token, "SIZE") == 0) {
@@ -721,10 +707,7 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "SIZELOGO") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents)) {
-                    labels[i].sizelogo = 2;
-                } else if (equals_no(contents))
-                    labels[i].sizelogo = 1;
+                labels[i].sizelogo = graphic_type(contents);
             }
 
         } else if (strcmp(token, "STERILITYTYPE") == 0) {
@@ -755,10 +738,7 @@ int parse_spreadsheet(char *buffer, Label_record *labels) {
         } else if (strcmp(token, "TFXLOGO") == 0) {
             for (int i = 1; i < spreadsheet_row_number; i++) {
                 get_field_contents_from_row(contents, i, count, tab_str);
-                if (equals_yes(contents)) {
-                    labels[i].tfxlogo = 2;
-                } else if (equals_no(contents))
-                    labels[i].tfxlogo = 1;
+                labels[i].tfxlogo = graphic_type(contents);
             }
 
         } else if (strcmp(token, "VERSION") == 0) {
