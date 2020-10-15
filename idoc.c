@@ -585,7 +585,7 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
 
     if ((strlen(graphic_val) > 0) &&
         (strcasecmp(graphic_val, "n/a") != 0) &&
-        (strcasecmp(graphic_val, "N") != 0)) {
+        (equals_no(graphic_val) != 1)) {
 
         //* get the first token *//*
         int tdline_count = 0;
@@ -659,10 +659,11 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
                    labels[record].revision, record);
     }
 
-    // LABEL_RELEASE_DATE record (optional)
+    // LABEL_RELEASE_DATE record
     if (strlen(labels[record].release) > 0) {
-        int rev = 0;
-        if ((sscanf(labels[record].release, "%d", &rev) == 1) && rev >= 120 && rev <= 1229) {
+        int year = 0;
+        int month = 0;
+        if ((sscanf(labels[record].release, "%d-%d", &year, &month) == 2) && year > 2019  && month > 0 && month < 13) {
             print_info_column_header(fpout, "LABEL_RELEASE_DATE", labels[record].release, idoc);
         } else
             printf("Invalid release date value \"%s\" in record %d. LABEL_RELEASE_DATE record skipped.\n",

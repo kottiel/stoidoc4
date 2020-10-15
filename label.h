@@ -24,6 +24,7 @@
 #define MAX_IPN_LEN            10
 #define MAX_GTIN_LEN           15
 #define SML                     5
+#define MED2                    8
 #define MAX_REV_LEN             4
 
 /* IDoc Field types                  */
@@ -94,7 +95,7 @@ typedef struct {
     char template[MAX_TEMPLATE_LEN];
     char bomlevel[SML];
     char revision[MAX_REV_LEN];
-    char release[SML];
+    char release[MED2];
     char *tdline;
 
     unsigned int caution : 4;
