@@ -403,7 +403,7 @@ void print_graphic0x_record(FILE *fpout, int *g_cnt, char *graphic_name, unsigne
         strcat(F_graphic_name, graphic_name);
         print_graphic_path(fpout, F_graphic_name);
         fprintf(fpout, "\n");
-    }  else if (value == 4) {
+    } else if (value == 4) {
         char g_cnt_str[03];
         char graphic[10] = "GRAPHIC0";
         char ISO_graphic_name[LRG] = "ISO_";
@@ -435,8 +435,7 @@ void print_boolean_record(FILE *fpout, char *col_name, int value, char *graphic_
         if (value == 2) {
             fprintf(fpout, "%-30s", "Y");
             print_graphic_path(fpout, graphic_name);
-        }
-        else if (value == 3) {
+        } else if (value == 3) {
             char F_graphic_name[LRG] = "F_";
             strcat(F_graphic_name, graphic_name);
             fprintf(fpout, "%-30s", "F_Y");
@@ -661,128 +660,182 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
 
     // LABEL_RELEASE_DATE record
     if (strlen(labels[record].release) > 0) {
-        int year = 0;
-        int month = 0;
-        if ((sscanf(labels[record].release, "%d-%d", &year, &month) == 2) && year > 2019  && month > 0 && month < 13) {
+        int input = 0;
+        int first_two = 0;
+        int second_two = 0;
+        sscanf(labels[record].release, "%d", &input);
+        first_two = input / 100;
+        second_two = input % 100;
+        if (((first_two >= 20) || ((first_two > 0) && (first_two < 13))) &&
+            ((second_two > 19) || ((second_two > 0) && (second_two < 13)))) {
             print_info_column_header(fpout, "LABEL_RELEASE_DATE", labels[record].release, idoc);
         } else
             printf("Invalid release date value \"%s\" in record %d. LABEL_RELEASE_DATE record skipped.\n",
                    labels[record].release, record);
     }
 
-    // SIZE record (optional)
-    memcpy(graphic_val, labels[record].size, MED);
+// SIZE record (optional)
+    memcpy(graphic_val, labels[record]
+            .size, MED);
 
-    if ((strlen(labels[record].size) > 0) && (!equals_no(graphic_val))) {
+    if ((
+                strlen(labels[record]
+                               .size) > 0) && (!
+            equals_no(graphic_val)
+        )) {
         char *token = labels[record].size;
 
-        //check for and remove any leading...
+//check for and remove any leading...
         if (token[0] == '\"')
-            memmove(token, token + 1, strlen(token));
+            memmove(token, token
+                           + 1,
+                    strlen(token)
+            );
 
-        // ...and/or trailing quotes
-        if (token[strlen(token) - 1] == '\"')
-            token[strlen(token) - 1] = '\0';
+// ...and/or trailing quotes
+        if (token[
+                    strlen(token)
+                    - 1] == '\"')
+            token[
+                    strlen(token)
+                    - 1] = '\0';
 
-        // and convert all instances of double quotes to single quotes
+// and convert all instances of double quotes to single quotes
         char *a;
         int diff;
-        while ((a = strstr(token, "\"\"")) != NULL) {
+        while ((
+                       a = strstr(token, "\"\"")
+               ) != NULL) {
             diff = (int) (a - token);
-            memmove(token + diff, token + diff + 1, strlen(token) - 1);
+            memmove(token
+                    + diff, token + diff + 1,
+                    strlen(token)
+                    - 1);
         }
 
-        // size name will be checked against its SAP lookup value.
-        // just in case there's a matching entry...
+// size name will be checked against its SAP lookup value.
+// just in case there's a matching entry...
         char *gnp = sap_lookup(labels[record].size);
         if (gnp != NULL)
-            print_info_lookup_column_header(fpout, "SIZE", labels[record].size, gnp, idoc);
+            print_info_lookup_column_header(fpout,
+                                            "SIZE", labels[record].size, gnp, idoc);
         else
-            print_info_column_header(fpout, "SIZE", labels[record].size, idoc);
+            print_info_column_header(fpout,
+                                     "SIZE", labels[record].size, idoc);
     }
 
-    /** LEVEL record (optional) */
+/** LEVEL record (optional) */
 
-    if ((strlen(labels[record].level) > 0) && (!equals_no(labels[record].level))) {
+    if ((
+                strlen(labels[record]
+                               .level) > 0) && (!
+            equals_no(labels[record]
+                              .level))) {
 
-        // level name will be checked against its SAP lookup value.
-        // if it's not in there, it'll be reported as such. Otherwise, the  (but will not be changed).
+// level name will be checked against its SAP lookup value.
+// if it's not in there, it'll be reported as such. Otherwise, the  (but will not be changed).
         char *gnp = sap_lookup(labels[record].level);
         if (gnp == NULL)
             printf("Level value \"%s\" in record %d is not a standard LEVEL value. Please check it.\n",
                    labels[record].level, record);
 
-        print_info_lookup_column_header(fpout, "LEVEL", labels[record].level, gnp, idoc);
+        print_info_lookup_column_header(fpout,
+                                        "LEVEL", labels[record].level, gnp, idoc);
 
     }
 
-    /** QUANTITY record (optional) */
-    if ((labels[record].quantity) && (!equals_no(labels[record].quantity))) {
-        print_info_column_header(fpout, "QUANTITY", labels[record].quantity, idoc);
+/** QUANTITY record (optional) */
+    if ((labels[record].quantity) && (!
+            equals_no(labels[record]
+                              .quantity))) {
+        print_info_column_header(fpout,
+                                 "QUANTITY", labels[record].quantity, idoc);
     }
 
-    /** BARCODETEXT record (optional) */
+/** BARCODETEXT record (optional) */
     char *endptr;
-    if ((strlen(labels[record].barcodetext) > 0) && (!equals_no(labels[record].barcodetext))) {
+    if ((
+                strlen(labels[record]
+                               .barcodetext) > 0) && (!
+            equals_no(labels[record]
+                              .barcodetext))) {
 
-        if (isNumeric(labels[record].barcodetext)) {
+        if (
+                isNumeric(labels[record]
+                                  .barcodetext)) {
 
-            // convert string to long long integer to verify GTIN length and check digit
+// convert string to long long integer to verify GTIN length and check digit
             long long gtin = strtoll(labels[record].barcodetext, &endptr, 10);
             int gtin_ctry_prefix;
             int gtin_cpny_prefix;
 
-            // 14-digit GTIN - verify the checkDigit
-            if ((strlen(labels[record].barcodetext) == GTIN_13 + 1)) {
+// 14-digit GTIN - verify the checkDigit
+            if ((
+                    strlen(labels[record]
+                                   .barcodetext) == GTIN_13 + 1)) {
                 if (gtin % 10 != checkDigit(&gtin)) {
                     printf("Invalid GTIN check digit \"%s\" in record %d.\n", labels[record].barcodetext, record);
                 }
                 gtin_ctry_prefix = (int) (gtin / GTIN_14_DIGIT);
                 gtin_cpny_prefix = (int) ((gtin - (gtin_ctry_prefix * GTIN_14_DIGIT)) / GTIN_14_CPNY_DIVISOR);
 
-            } else if (strlen(labels[record].barcodetext) == GTIN_13) {
+            } else if (
+                    strlen(labels[record]
+                                   .barcodetext) == GTIN_13) {
                 gtin_ctry_prefix = (int) (gtin / GTIN_13_DIGIT);
                 gtin_cpny_prefix = (int) ((gtin - (gtin_ctry_prefix * GTIN_13_DIGIT)) / GTIN_13_CPNY_DIVISOR);
             } else {
                 printf("Invalid GTIN check digit or length \"%s\" in record %d.\n", labels[record].barcodetext, record);
             }
 
-            // verify GTIN prefixes if it's nonzero (otherwise it's just a placeholder)
-            // verify the GTIN prefixes (country: 0, 1, 2, 3, company: 4026704 or 5060112)
+// verify GTIN prefixes if it's nonzero (otherwise it's just a placeholder)
+// verify the GTIN prefixes (country: 0, 1, 2, 3, company: 4026704 or 5060112)
             if ((gtin_ctry_prefix > 4) || (gtin != 0) && (gtin_cpny_prefix != 4026704 && gtin_cpny_prefix != 5060112))
                 printf("Invalid GTIN prefix \"%d\" in record %d.\n", gtin_cpny_prefix, record);
 
-            // GTIN non-numeric so we'll report that it's non-numeric before printing.
+// GTIN non-numeric so we'll report that it's non-numeric before printing.
         } else {
             printf("Nonnumeric GTIN \"%s\" in record %d. \n", labels[record].barcodetext, record);
         }
-        print_info_column_header(fpout, "BARCODETEXT", labels[record].barcodetext, idoc);
+        print_info_column_header(fpout,
+                                 "BARCODETEXT", labels[record].barcodetext, idoc);
     }
 
-    /** GTIN record (optional) - this is a non-SAP field that prints only if [-n] flag is present at runtime */
+/** GTIN record (optional) - this is a non-SAP field that prints only if [-n] flag is present at runtime */
     if (labels[record].gtin) {
         if (non_SAP_fields) {
             char gtin_digit1[2] = {0};
-            strncpy(gtin_digit1, labels[record].gtin, 1);
+            strncpy(gtin_digit1, labels[record]
+                    .gtin, 1);
 
-            if ((strlen(labels[record].gtin) > 0) && (!equals_no(labels[record].gtin))) {
+            if ((
+                        strlen(labels[record]
+                                       .gtin) > 0) && (!
+                    equals_no(labels[record]
+                                      .gtin))) {
 
-                if (isNumeric(labels[record].gtin)) {
+                if (
+                        isNumeric(labels[record]
+                                          .gtin)) {
 
-                    // convert string to long long integer to verify GTIN length and check digit
+// convert string to long long integer to verify GTIN length and check digit
                     long long gtin = strtoll(labels[record].gtin, &endptr, 10);
                     int gtin_ctry_prefix;
                     int gtin_cpny_prefix;
 
-                    // 14-digit GTIN - verify the checkDigit
-                    if ((strlen(labels[record].gtin) == GTIN_13 + 1)) {
+// 14-digit GTIN - verify the checkDigit
+                    if ((
+                            strlen(labels[record]
+                                           .gtin) == GTIN_13 + 1)) {
                         if (gtin % 10 != checkDigit(&gtin)) {
                             printf("Invalid GTIN check digit \"%s\" in record %d.\n", labels[record].gtin, record);
                         }
                         gtin_ctry_prefix = (int) (gtin / GTIN_14_DIGIT);
                         gtin_cpny_prefix = (int) ((gtin - (gtin_ctry_prefix * GTIN_14_DIGIT)) / GTIN_14_CPNY_DIVISOR);
 
-                    } else if (strlen(labels[record].gtin) == GTIN_13) {
+                    } else if (
+                            strlen(labels[record]
+                                           .gtin) == GTIN_13) {
                         gtin_ctry_prefix = (int) (gtin / GTIN_13_DIGIT);
                         gtin_cpny_prefix = (int) ((gtin - (gtin_ctry_prefix * GTIN_13_DIGIT)) / GTIN_13_CPNY_DIVISOR);
                     } else {
@@ -790,212 +843,302 @@ int print_label_idoc_records(FILE *fpout, Label_record *labels, int record, Ctrl
                                record);
                     }
 
-                    // verify GTIN prefixes if it's nonzero (otherwise it's just a placeholder)
-                    // verify the GTIN prefixes (country: 0, 1, 2, 3, company: 4026704 or 5060112)
+// verify GTIN prefixes if it's nonzero (otherwise it's just a placeholder)
+// verify the GTIN prefixes (country: 0, 1, 2, 3, company: 4026704 or 5060112)
                     if ((gtin_ctry_prefix > 4) ||
                         (gtin != 0) && (gtin_cpny_prefix != 4026704 && gtin_cpny_prefix != 5060112))
                         printf("Invalid GTIN prefix \"%d\" in record %d.\n", gtin_cpny_prefix, record);
 
-                    // GTIN non-numeric so we'll report that it's non-numeric before printing.
+// GTIN non-numeric so we'll report that it's non-numeric before printing.
                 } else {
                     printf("Nonnumeric GTIN \"%s\" in record %d. \n", labels[record].gtin, record);
                 }
-                print_info_column_header(fpout, "GTIN", labels[record].gtin, idoc);
+                print_info_column_header(fpout,
+                                         "GTIN", labels[record].gtin, idoc);
             }
         }
     }
-    // LTNUMBER record (optional)
+// LTNUMBER record (optional)
     if (labels[record].ltnumber) {
-        print_info_column_header(fpout, "LTNUMBER", labels[record].ltnumber, idoc);
+        print_info_column_header(fpout,
+                                 "LTNUMBER", labels[record].ltnumber, idoc);
     }
 
-    // IPN record (optional) - - this is a non-SAP field that prints only if [-n] flag is present at runtime */
+// IPN record (optional) - - this is a non-SAP field that prints only if [-n] flag is present at runtime */
     if (non_SAP_fields)
         if (labels[record].ipn) {
-            print_info_column_header(fpout, "IPN", labels[record].ipn, idoc);
+            print_info_column_header(fpout,
+                                     "IPN", labels[record].ipn, idoc);
         }
 
-    //
-    // GRAPHIC01 - GRAPHIC14 Fields (optional)
-    // If the cell value is "Y" or "YES', a corresponding record is printed.
-    //
+//
+// GRAPHIC01 - GRAPHIC14 Fields (optional)
+// If the cell value is "Y" or "YES', a corresponding record is printed.
+//
     int g_cnt = 1;
     char temp_graphic[MED];
 
-    print_graphic0x_record(fpout, &g_cnt, "Caution.tif", labels[record].caution, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "ConsultIFU.tif", labels[record].consultifu, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "Latex.tif", labels[record].latex, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "DoNotUsePakDam.tif", labels[record].donotusedamaged, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "Latex Free.tif", labels[record].latexfree, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "ManInBox.tif", labels[record].maninbox, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "DoNotRe-sterilize.tif", labels[record].noresterilize, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "Non-sterile.tif", labels[record].nonsterile, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "PVC_Free.tif", labels[record].pvcfree, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "Reusable.tif", labels[record].reusable, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "SINGLEUSE.tif", labels[record].singleuseonly, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "SinglePatienUse.tif", labels[record].singlepatientuse, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "ElectroSurIFU.tif", labels[record].electroifu, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "KeepDry.tif", labels[record].keepdry, idoc);
+    print_graphic0x_record(fpout,
+                           &g_cnt, "Caution.tif", labels[record].caution, idoc);
+    print_graphic0x_record(fpout,
+                           &g_cnt, "ConsultIFU.tif", labels[record].consultifu, idoc);
+    print_graphic0x_record(fpout,
+                           &g_cnt, "Latex.tif", labels[record].latex, idoc);
+    print_graphic0x_record(fpout,
+                           &g_cnt, "DoNotUsePakDam.tif", labels[record].donotusedamaged, idoc);
+    print_graphic0x_record(fpout,
+                           &g_cnt, "Latex Free.tif", labels[record].latexfree, idoc);
+    print_graphic0x_record(fpout,
+                           &g_cnt, "ManInBox.tif", labels[record].maninbox, idoc);
+    print_graphic0x_record(fpout,
+                           &g_cnt, "DoNotRe-sterilize.tif", labels[record].noresterilize, idoc);
+    print_graphic0x_record(fpout,
+                           &g_cnt, "Non-sterile.tif", labels[record].nonsterile, idoc);
+    print_graphic0x_record(fpout,
+                           &g_cnt, "PVC_Free.tif", labels[record].pvcfree, idoc);
+    print_graphic0x_record(fpout,
+                           &g_cnt, "Reusable.tif", labels[record].reusable, idoc);
+    print_graphic0x_record(fpout,
+                           &g_cnt, "SINGLEUSE.tif", labels[record].singleuseonly, idoc);
+    print_graphic0x_record(fpout,
+                           &g_cnt, "SinglePatienUse.tif", labels[record].singlepatientuse, idoc);
+    print_graphic0x_record(fpout,
+                           &g_cnt, "ElectroSurIFU.tif", labels[record].electroifu, idoc);
+    print_graphic0x_record(fpout,
+                           &g_cnt, "KeepDry.tif", labels[record].keepdry, idoc);
 
-    /*print_graphic0x_record(fpout, &g_cnt, "Caution.tif", labels[record].caution, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "ConsultIFU.tif", labels[record].consultifu, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "Latex.tif", labels[record].latex, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "DoNotUsePakDam.tif", labels[record].donotusedamaged, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "F_LatexFree3.tif", labels[record].latexfree, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "ManInBox.tif", labels[record].maninbox, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "DoNotRe-sterilize.tif", labels[record].noresterilize, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "Non-sterile.tif", labels[record].nonsterile, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "PVC_Free.tif", labels[record].pvcfree, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "REUSABLE.tif", labels[record].reusable, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "SINGLEUSE.tif", labels[record].singleuseonly, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "SINGLEPATIENUSE.tif", labels[record].singlepatientuse, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "ElectroSurIFU.tif", labels[record].electroifu, idoc);
-    print_graphic0x_record(fpout, &g_cnt, "KeepDry.tif", labels[record].keepdry, idoc);*/
-    //
-    // END of GRAPHIC01 - GRAPHIC14 Fields (optional)
-    //
+/*print_graphic0x_record(fpout, &g_cnt, "Caution.tif", labels[record].caution, idoc);
+print_graphic0x_record(fpout, &g_cnt, "ConsultIFU.tif", labels[record].consultifu, idoc);
+print_graphic0x_record(fpout, &g_cnt, "Latex.tif", labels[record].latex, idoc);
+print_graphic0x_record(fpout, &g_cnt, "DoNotUsePakDam.tif", labels[record].donotusedamaged, idoc);
+print_graphic0x_record(fpout, &g_cnt, "F_LatexFree3.tif", labels[record].latexfree, idoc);
+print_graphic0x_record(fpout, &g_cnt, "ManInBox.tif", labels[record].maninbox, idoc);
+print_graphic0x_record(fpout, &g_cnt, "DoNotRe-sterilize.tif", labels[record].noresterilize, idoc);
+print_graphic0x_record(fpout, &g_cnt, "Non-sterile.tif", labels[record].nonsterile, idoc);
+print_graphic0x_record(fpout, &g_cnt, "PVC_Free.tif", labels[record].pvcfree, idoc);
+print_graphic0x_record(fpout, &g_cnt, "REUSABLE.tif", labels[record].reusable, idoc);
+print_graphic0x_record(fpout, &g_cnt, "SINGLEUSE.tif", labels[record].singleuseonly, idoc);
+print_graphic0x_record(fpout, &g_cnt, "SINGLEPATIENUSE.tif", labels[record].singlepatientuse, idoc);
+print_graphic0x_record(fpout, &g_cnt, "ElectroSurIFU.tif", labels[record].electroifu, idoc);
+print_graphic0x_record(fpout, &g_cnt, "KeepDry.tif", labels[record].keepdry, idoc);*/
+//
+// END of GRAPHIC01 - GRAPHIC14 Fields (optional)
+//
 
-    /** BARCODE1 record (optional) */
-    if ((labels[record].barcode1) && (!equals_no(labels[record].barcode1))) {
+/** BARCODE1 record (optional) */
+    if ((labels[record].barcode1) && (!
+            equals_no(labels[record]
+                              .barcode1))) {
 
-        if (isNumeric(labels[record].barcode1)) {
+        if (
+                isNumeric(labels[record]
+                                  .barcode1)) {
 
-            // convert string to long long integer to verify GTIN length and check digit
+// convert string to long long integer to verify GTIN length and check digit
             long long gtin = strtoll(labels[record].barcode1, &endptr, 10);
             int gtin_ctry_prefix;
             int gtin_cpny_prefix;
 
-            // 14-digit GTIN - verify the checkDigit
-            if ((strlen(labels[record].barcode1) == GTIN_13 + 1)) {
+// 14-digit GTIN - verify the checkDigit
+            if ((
+                    strlen(labels[record]
+                                   .barcode1) == GTIN_13 + 1)) {
                 if (gtin % 10 != checkDigit(&gtin)) {
                     printf("Invalid GTIN check digit \"%s\" in record %d.\n", labels[record].barcode1, record);
                 }
                 gtin_ctry_prefix = (int) (gtin / GTIN_14_DIGIT);
                 gtin_cpny_prefix = (int) ((gtin - (gtin_ctry_prefix * GTIN_14_DIGIT)) / GTIN_14_CPNY_DIVISOR);
 
-            } else if (strlen(labels[record].barcode1) == GTIN_13) {
+            } else if (
+                    strlen(labels[record]
+                                   .barcode1) == GTIN_13) {
                 gtin_ctry_prefix = (int) (gtin / GTIN_13_DIGIT);
                 gtin_cpny_prefix = (int) ((gtin - (gtin_ctry_prefix * GTIN_13_DIGIT)) / GTIN_13_CPNY_DIVISOR);
             } else {
                 printf("Invalid GTIN check digit or length \"%s\" in record %d.\n", labels[record].barcode1, record);
             }
 
-            // verify GTIN prefixes if it's nonzero (otherwise it's just a placeholder)
-            // verify the GTIN prefixes (country: 0, 1, 2, 3, company: 4026704 or 5060112)
+// verify GTIN prefixes if it's nonzero (otherwise it's just a placeholder)
+// verify the GTIN prefixes (country: 0, 1, 2, 3, company: 4026704 or 5060112)
             if ((gtin_ctry_prefix > 4) || (gtin != 0) && (gtin_cpny_prefix != 4026704 && gtin_cpny_prefix != 5060112))
                 printf("Invalid GTIN prefix \"%d\" in record %d.\n", gtin_cpny_prefix, record);
         }
-        print_graphic_column_header(fpout, "BARCODE1", labels[record].barcode1, "Nothing", idoc);
+        print_graphic_column_header(fpout,
+                                    "BARCODE1", labels[record].barcode1, "Nothing", idoc);
     }
 
-    /** GS1 record (optional) */
+/** GS1 record (optional) */
 
-    if ((labels[record].gs1) && (!equals_no(labels[record].gs1))) {
+    if ((labels[record].gs1) && (!
+            equals_no(labels[record]
+                              .gs1))) {
 
         char *endptr;
-        if (isNumeric(labels[record].gs1)) {
+        if (
+                isNumeric(labels[record]
+                                  .gs1)) {
 
-            // convert string to long long integer to verify GTIN length and check digit
+// convert string to long long integer to verify GTIN length and check digit
             long long gtin = strtoll(labels[record].gs1, &endptr, 10);
             int gtin_ctry_prefix;
             int gtin_cpny_prefix;
 
-            // 14-digit GTIN - verify the checkDigit
-            if ((strlen(labels[record].gs1) == GTIN_13 + 1)) {
+// 14-digit GTIN - verify the checkDigit
+            if ((
+                    strlen(labels[record]
+                                   .gs1) == GTIN_13 + 1)) {
                 if (gtin % 10 != checkDigit(&gtin)) {
                     printf("Invalid GTIN check digit \"%s\" in record %d.\n", labels[record].gs1, record);
                 }
                 gtin_ctry_prefix = (int) (gtin / GTIN_14_DIGIT);
                 gtin_cpny_prefix = (int) ((gtin - (gtin_ctry_prefix * GTIN_14_DIGIT)) / GTIN_14_CPNY_DIVISOR);
 
-            } else if (strlen(labels[record].gs1) == GTIN_13) {
+            } else if (
+                    strlen(labels[record]
+                                   .gs1) == GTIN_13) {
                 gtin_ctry_prefix = (int) (gtin / GTIN_13_DIGIT);
                 gtin_cpny_prefix = (int) ((gtin - (gtin_ctry_prefix * GTIN_13_DIGIT)) / GTIN_13_CPNY_DIVISOR);
             } else {
                 printf("Invalid GTIN check digit or length \"%s\" in record %d.\n", labels[record].gs1, record);
             }
 
-            // verify GTIN prefixes if it's nonzero (otherwise it's just a placeholder)
-            // verify the GTIN prefixes (country: 0, 1, 2, 3, company: 4026704 or 5060112)
+// verify GTIN prefixes if it's nonzero (otherwise it's just a placeholder)
+// verify the GTIN prefixes (country: 0, 1, 2, 3, company: 4026704 or 5060112)
             if ((gtin_ctry_prefix > 4) || (gtin != 0) && (gtin_cpny_prefix != 4026704 && gtin_cpny_prefix != 5060112))
                 printf("Invalid GTIN prefix \"%d\" in record %d.\n", gtin_cpny_prefix, record);
         }
 
-        // if the GS1 field contains any spaces, just print the column heading, but no value
-        if (containsSpaces(labels[record].gs1))
-            print_blank_graphic_column_header(fpout, "GS1", labels[record].gs1, idoc);
+// if the GS1 field contains any spaces, just print the column heading, but no value
+        if (
+                containsSpaces(labels[record]
+                                       .gs1))
+            print_blank_graphic_column_header(fpout,
+                                              "GS1", labels[record].gs1, idoc);
         else
-            print_graphic_column_header(fpout, "GS1", labels[record].gs1, "GS1", idoc);
+            print_graphic_column_header(fpout,
+                                        "GS1", labels[record].gs1, "GS1", idoc);
     }
 
-    print_boolean_record(fpout, "ECREP", labels[record].ecrep, "EC Rep.tif", idoc);
-    print_boolean_record(fpout, "EXPDATE", labels[record].expdate, "Expiration Date.tif", idoc);
-    print_boolean_record(fpout, "KEEPAWAYHEAT", labels[record].keepawayheat, "KeepAwayHeat.tif", idoc);
-    print_boolean_record(fpout, "LOTGRAPHIC", labels[record].lotgraphic, "Lot.tif", idoc);
-    print_boolean_record(fpout, "MANUFACTURER", labels[record].manufacturer, "Manufacturer.tif", idoc);
-    print_boolean_record(fpout, "MFGDATE", labels[record].mfgdate, "DateofManufacture.tif", idoc);
-    print_boolean_record(fpout, "PHTDEHP", labels[record].phtdehp, "PHT-DEHP.tif", idoc);
-    print_boolean_record(fpout, "PHTBBP", labels[record].phtbbp, "PHT-BBP.tif", idoc);
-    print_boolean_record(fpout, "PHTDINP", labels[record].phtdinp, "PHT-DINP.tif", idoc);
-    print_boolean_record(fpout, "REFNUMBER", labels[record].refnumber, "REF.tif", idoc);
-    print_boolean_record(fpout, "REF", labels[record].ref, "REF.tif", idoc);
-    print_boolean_record(fpout, "RXONLY", labels[record].rxonly, "RX Only.tif", idoc);
-    print_boolean_record(fpout, "SERIAL", labels[record].serial, "Serial Number.tif", idoc);
-    print_boolean_record(fpout, "TFXLOGO", labels[record].tfxlogo, "TeleflexMedical.tif", idoc);
+    print_boolean_record(fpout,
+                         "ECREP", labels[record].ecrep, "EC Rep.tif", idoc);
+    print_boolean_record(fpout,
+                         "EXPDATE", labels[record].expdate, "Expiration Date.tif", idoc);
+    print_boolean_record(fpout,
+                         "KEEPAWAYHEAT", labels[record].keepawayheat, "KeepAwayHeat.tif", idoc);
+    print_boolean_record(fpout,
+                         "LOTGRAPHIC", labels[record].lotgraphic, "Lot.tif", idoc);
+    print_boolean_record(fpout,
+                         "MANUFACTURER", labels[record].manufacturer, "Manufacturer.tif", idoc);
+    print_boolean_record(fpout,
+                         "MFGDATE", labels[record].mfgdate, "DateofManufacture.tif", idoc);
+    print_boolean_record(fpout,
+                         "PHTDEHP", labels[record].phtdehp, "PHT-DEHP.tif", idoc);
+    print_boolean_record(fpout,
+                         "PHTBBP", labels[record].phtbbp, "PHT-BBP.tif", idoc);
+    print_boolean_record(fpout,
+                         "PHTDINP", labels[record].phtdinp, "PHT-DINP.tif", idoc);
+    print_boolean_record(fpout,
+                         "REFNUMBER", labels[record].refnumber, "REF.tif", idoc);
+    print_boolean_record(fpout,
+                         "REF", labels[record].ref, "REF.tif", idoc);
+    print_boolean_record(fpout,
+                         "RXONLY", labels[record].rxonly, "RX Only.tif", idoc);
+    print_boolean_record(fpout,
+                         "SERIAL", labels[record].serial, "Serial Number.tif", idoc);
+    print_boolean_record(fpout,
+                         "TFXLOGO", labels[record].tfxlogo, "TeleflexMedical.tif", idoc);
 
-    print_boolean_column_header(fpout, "SIZELOGO", labels[record].sizelogo, idoc);
+    print_boolean_column_header(fpout,
+                                "SIZELOGO", labels[record].sizelogo, idoc);
 
-    print_graphic_column_header(fpout, "ADDRESS", labels[record].address, "Nothing", idoc);
-    print_graphic_column_header(fpout, "CAUTIONSTATE", labels[record].cautionstatement, "Nothing", idoc);
-    print_graphic_column_header(fpout, "CE0120", labels[record].cemark, "Nothing", idoc);
-    print_graphic_column_header(fpout, "COOSTATE", labels[record].coostate, "Nothing", idoc);
-    print_graphic_column_header(fpout, "DISTRIBUTEDBY", labels[record].distby, "Nothing", idoc);
-    print_graphic_column_header(fpout, "ECREPADDRESS", labels[record].ecrepaddress, "Nothing", idoc);
-    print_graphic_column_header(fpout, "FLGRAPHIC", labels[record].flgraphic, "Nothing", idoc);
-    print_graphic_column_header(fpout, "LABELGRAPH1", labels[record].labelgraph1, "Nothing", idoc);
-    print_graphic_column_header(fpout, "LABELGRAPH2", labels[record].labelgraph2, "Nothing", idoc);
-    print_graphic_column_header(fpout, "LATEXSTATEMENT", labels[record].latexstatement, "Nothing", idoc);
-    print_graphic_column_header(fpout, "LOGO1", labels[record].logo1, "Nothing", idoc);
-    print_graphic_column_header(fpout, "LOGO2", labels[record].logo2, "Nothing", idoc);
-    print_graphic_column_header(fpout, "LOGO3", labels[record].logo3, "Nothing", idoc);
-    print_graphic_column_header(fpout, "LOGO4", labels[record].logo4, "Nothing", idoc);
-    print_graphic_column_header(fpout, "LOGO5", labels[record].logo5, "Nothing", idoc);
-    print_graphic_column_header(fpout, "MDR1", labels[record].mdr1, "Nothing", idoc);
-    print_graphic_column_header(fpout, "MDR2", labels[record].mdr2, "Nothing", idoc);
-    print_graphic_column_header(fpout, "MDR3", labels[record].mdr3, "Nothing", idoc);
-    print_graphic_column_header(fpout, "MDR4", labels[record].mdr4, "Nothing", idoc);
-    print_graphic_column_header(fpout, "MDR5", labels[record].mdr5, "Nothing", idoc);
-    print_graphic_column_header(fpout, "MANUFACTUREDBY", labels[record].manufacturedby, "Nothing", idoc);
-    print_graphic_column_header(fpout, "PATENTSTA", labels[record].patentstatement, "Nothing", idoc);
-    print_graphic_column_header(fpout, "STERILESTA", labels[record].sterilitystatement, "Nothing", idoc);
-    print_graphic_column_header(fpout, "STERILITYTYPE", labels[record].sterilitytype, "blank-01.txt", idoc);
-    print_graphic_column_header(fpout, "TEMPRANGE", labels[record].temprange, "Nothing", idoc);
-    print_graphic_column_header(fpout, "VERSION", labels[record].version, "Nothing", idoc);
-    print_graphic_column_header(fpout, "INSERTGRAPHIC", labels[record].insertgraphic, "yes", idoc);
-
-
-
+    print_graphic_column_header(fpout,
+                                "ADDRESS", labels[record].address, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "CAUTIONSTATE", labels[record].cautionstatement, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "CE0120", labels[record].cemark, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "COOSTATE", labels[record].coostate, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "DISTRIBUTEDBY", labels[record].distby, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "ECREPADDRESS", labels[record].ecrepaddress, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "FLGRAPHIC", labels[record].flgraphic, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "LABELGRAPH1", labels[record].labelgraph1, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "LABELGRAPH2", labels[record].labelgraph2, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "LATEXSTATEMENT", labels[record].latexstatement, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "LOGO1", labels[record].logo1, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "LOGO2", labels[record].logo2, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "LOGO3", labels[record].logo3, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "LOGO4", labels[record].logo4, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "LOGO5", labels[record].logo5, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "MDR1", labels[record].mdr1, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "MDR2", labels[record].mdr2, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "MDR3", labels[record].mdr3, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "MDR4", labels[record].mdr4, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "MDR5", labels[record].mdr5, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "MANUFACTUREDBY", labels[record].manufacturedby, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "PATENTSTA", labels[record].patentstatement, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "STERILESTA", labels[record].sterilitystatement, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "STERILITYTYPE", labels[record].sterilitytype, "blank-01.txt", idoc);
+    print_graphic_column_header(fpout,
+                                "TEMPRANGE", labels[record].temprange, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "VERSION", labels[record].version, "Nothing", idoc);
+    print_graphic_column_header(fpout,
+                                "INSERTGRAPHIC", labels[record].insertgraphic, "yes", idoc);
 
 
     if (non_SAP_fields) {
-        print_info_column_header(fpout, "OLDLABEL", labels[record].oldlabel, idoc);
-        print_info_column_header(fpout, "OLDTEMPLATE", labels[record].oldtemplate, idoc);
-        print_info_column_header(fpout, "PREVLABEL", labels[record].prevlabel, idoc);
-        print_info_column_header(fpout, "PREVTEMPLATE", labels[record].prevtemplate, idoc);
-        print_info_column_header(fpout, "BOMLEVEL", labels[record].bomlevel, idoc);
+        print_info_column_header(fpout,
+                                 "OLDLABEL", labels[record].oldlabel, idoc);
+        print_info_column_header(fpout,
+                                 "OLDTEMPLATE", labels[record].oldtemplate, idoc);
+        print_info_column_header(fpout,
+                                 "PREVLABEL", labels[record].prevlabel, idoc);
+        print_info_column_header(fpout,
+                                 "PREVTEMPLATE", labels[record].prevtemplate, idoc);
+        print_info_column_header(fpout,
+                                 "BOMLEVEL", labels[record].bomlevel, idoc);
 
-        // DESCRIPTION record (optional)
+// DESCRIPTION record (optional)
 
-        //check for and remove any leading...
+//check for and remove any leading...
         if (labels[record].description[0] == '\"')
-            memmove(labels[record].description, labels[record].description + 1,
-                    (int) strlen(labels[record].description));
+            memmove(labels[record]
+                            .description, labels[record].description + 1,
+                    (int)
+                            strlen(labels[record]
+                                           .description));
 
-        // ...and/or trailing quotes
-        if (labels[record].description[(int) strlen(labels[record].description) - 1] == '\"')
-            labels[record].description[(int) strlen(labels[record].description) - 1] = '\0';
+// ...and/or trailing quotes
+        if (labels[record].description[(int)
+                                               strlen(labels[record]
+                                                              .description) - 1] == '\"')
+            labels[record].description[(int)
+                                               strlen(labels[record]
+                                                              .description) - 1] = '\0';
 
-        print_info_column_header(fpout, "DESCRIPTION", labels[record].description, idoc);
+        print_info_column_header(fpout,
+                                 "DESCRIPTION", labels[record].description, idoc);
     }
     return 1;
 }
@@ -1041,38 +1184,32 @@ int main(int argc, char *argv[]) {
         if ((argv[4] != NULL) && (strncmpci(argv[4], "-J", 2) == 0)) {
             alt_path = true;
             printf("Alternate graphics path selected. Run program without '-J' flag to remove.\n");
-        }
-        else if ((argv[4] != NULL) && (strncmpci(argv[4], "-L", 2) == 0)) {
+        } else if ((argv[4] != NULL) && (strncmpci(argv[4], "-L", 2) == 0)) {
             label_data = true;
             printf("\"Label Data\" output file option selected. Run program without '-L' flag to remove.\n");
-        }
-        else if ((argv[4] != NULL) && (strncmpci(argv[4], "-n", 2) == 0)) {
+        } else if ((argv[4] != NULL) && (strncmpci(argv[4], "-n", 2) == 0)) {
             non_SAP_fields = true;
             printf("Including non-SAP column headings in IDoc. Run program without '-n' flag to remove.\n");
         }
     if (argc > 3)
-        if ((argv[3] != NULL) && (strncmpci(argv[3], "-J", 2) == 0)){
+        if ((argv[3] != NULL) && (strncmpci(argv[3], "-J", 2) == 0)) {
             alt_path = true;
             printf("Alternate graphics path selected. Run program without '-J' flag to remove.\n");
-        }
-        else if ((argv[3] != NULL) && (strncmpci(argv[3], "-L", 2) == 0)){
+        } else if ((argv[3] != NULL) && (strncmpci(argv[3], "-L", 2) == 0)) {
             label_data = true;
             printf("\"Label Data\" output file option selected. Run program without '-L' flag to remove.\n");
-        }
-        else if ((argv[3] != NULL) && (strncmpci(argv[3], "-n", 2) == 0)) {
+        } else if ((argv[3] != NULL) && (strncmpci(argv[3], "-n", 2) == 0)) {
             non_SAP_fields = true;
             printf("Including non-SAP column headings in IDoc. Run program without '-n' flag to remove.\n");
         }
     if (argc > 2) {
-        if ((argv[2] != NULL) && (strncmpci(argv[2], "-J", 2) == 0)){
+        if ((argv[2] != NULL) && (strncmpci(argv[2], "-J", 2) == 0)) {
             alt_path = true;
             printf("Alternate graphics path selected. Run program without '-J' flag to remove.\n");
-        }
-        else if ((argv[2] != NULL) && (strncmpci(argv[2], "-L", 2) == 0)){
+        } else if ((argv[2] != NULL) && (strncmpci(argv[2], "-L", 2) == 0)) {
             label_data = true;
             printf("\"Label Data\" output file option selected. Run program without '-L' flag to remove.\n");
-        }
-        else if ((argv[2] != NULL) && (strncmpci(argv[2], "-n", 2) == 0)) {
+        } else if ((argv[2] != NULL) && (strncmpci(argv[2], "-n", 2) == 0)) {
             non_SAP_fields = true;
             printf("Including non-SAP column headings in IDoc. Run program without '-n' flag to remove.\n");
         }
