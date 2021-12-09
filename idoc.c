@@ -36,11 +36,15 @@
 /* the number of spaces to indent the TDline lines                       */
 #define TDLINE_INDENT  61
 
+/* maximum length for a path                                             */
+#define MAX_PATH       260
+
+
 /* normal graphics folder path                                           */
 #define GRAPHICS_PATH  "T:\\MEDICAL\\NA\\RTP\\TEAM CENTER\\TEMPLATES\\GRAPHICS\\"
 
-/* alternate graphics folder path                                        */
-#define ALT_GRAPHICS_PATH  "C:\\Users\\jkottiel\\OneDrive - Teleflex Incorporated\\1 - Teleflex\\Labeling Resources\\Personal Graphics\\"
+/* global variable that holds alternate graphics folder path             */
+char alt_graphics_path[MAX_PATH] = {0};
 
 /* determine the graphics path at run time                               */
 bool alt_path = false;
@@ -248,8 +252,8 @@ void print_spaces(FILE *fpout, int n) {
 void print_graphic_path(FILE *fpout, char *graphic) {
     int n = 0;
     if (alt_path) {
-        fprintf(fpout, "%s", ALT_GRAPHICS_PATH);
-        n = 255 - ((int) strlen(ALT_GRAPHICS_PATH) + (int) strnlen(graphic, MED + 1));
+        fprintf(fpout, "%s", alt_graphics_path);
+        n = 255 - ((int) strlen(alt_graphics_path) + (int) strnlen(graphic, MED + 1));
     } else {
         fprintf(fpout, "%s", GRAPHICS_PATH);
         n = 255 - ((int) strlen(GRAPHICS_PATH) + (int) strnlen(graphic, MED + 1));
@@ -1172,48 +1176,37 @@ int main(int argc, char *argv[]) {
     FILE *fp, *fpout_idoc, *fpout_data;
 
     if ((argc != 2) && (argc != 3) && (argc != 4)) {
-        printf("usage: %s filename.txt [-J] [-I] [-L] [-n]\n", argv[0]);
+        printf("usage: %s filename.txt [PATH:<alternate graphics path>] [-n]\n", argv[0]);
         return EXIT_FAILURE;
     }
 
-    // check for optional command line parameters '-J', 'L' and 'n':
-    // -J turns the alt_path to true which substitutes ALT_GRAPHICS_PATH for GRAPHICS_PATH
-    // -L creates a second "Label Data" output file
+    // check for optional command line parameter:
+    // -PATH:  substitutes <alternate graphics path> for GRAPHICS_PATH
     // -n prints "non-standard" column names in the IDoc: GTIN, IPN, OLDLABEL, OLDTEMPLATE, DESCRIPTION, PREVLABEL and PREVTEMPLATE
-    if (argc > 4)
-        if ((argv[4] != NULL) && (strncmpci(argv[4], "-J", 2) == 0)) {
-            alt_path = true;
-            printf("Alternate graphics path selected. Run program without '-J' flag to remove.\n");
-        } else if ((argv[4] != NULL) && (strncmpci(argv[4], "-L", 2) == 0)) {
-            label_data = true;
-            printf("\"Label Data\" output file option selected. Run program without '-L' flag to remove.\n");
-        } else if ((argv[4] != NULL) && (strncmpci(argv[4], "-n", 2) == 0)) {
-            non_SAP_fields = true;
-            printf("Including non-SAP column headings in IDoc. Run program without '-n' flag to remove.\n");
-        }
+    // to do: -L creates a second "Label Data" output file
+
     if (argc > 3)
-        if ((argv[3] != NULL) && (strncmpci(argv[3], "-J", 2) == 0)) {
+        if ((argv[3] != NULL) && (strncmpci(argv[3], "PATH:", 5) == 0)) {
             alt_path = true;
-            printf("Alternate graphics path selected. Run program without '-J' flag to remove.\n");
-        } else if ((argv[3] != NULL) && (strncmpci(argv[3], "-L", 2) == 0)) {
-            label_data = true;
-            printf("\"Label Data\" output file option selected. Run program without '-L' flag to remove.\n");
+            // define alternate graphics path variable
+            char *p = argv[2] + strlen("PATH:");
+            strcpy(alt_graphics_path, p);
+            printf("Alternate graphics path selected:\n=> %s \n(run program without 'PATH:' flag to use default graphics path)\n\n", alt_graphics_path);
         } else if ((argv[3] != NULL) && (strncmpci(argv[3], "-n", 2) == 0)) {
             non_SAP_fields = true;
             printf("Including non-SAP column headings in IDoc. Run program without '-n' flag to remove.\n");
         }
-    if (argc > 2) {
-        if ((argv[2] != NULL) && (strncmpci(argv[2], "-J", 2) == 0)) {
+    if (argc > 2)
+        if ((argv[2] != NULL) && (strncmpci(argv[2], "PATH:", 5) == 0)) {
             alt_path = true;
-            printf("Alternate graphics path selected. Run program without '-J' flag to remove.\n");
-        } else if ((argv[2] != NULL) && (strncmpci(argv[2], "-L", 2) == 0)) {
-            label_data = true;
-            printf("\"Label Data\" output file option selected. Run program without '-L' flag to remove.\n");
+            // define alternate graphics path variable
+            char *p = argv[2] + strlen("PATH:");
+            strcpy(alt_graphics_path, p);
+            printf("Alternate graphics path selected:\n=> %s \n(run program without 'PATH:' flag to use default graphics path)\n\n", alt_graphics_path);
         } else if ((argv[2] != NULL) && (strncmpci(argv[2], "-n", 2) == 0)) {
             non_SAP_fields = true;
             printf("Including non-SAP column headings in IDoc. Run program without '-n' flag to remove.\n");
         }
-    }
 
     if ((fp = fopen(argv[1], "r")) == NULL) {
         printf("File not found.\n");
