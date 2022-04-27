@@ -1024,7 +1024,7 @@ print_graphic0x_record(fpout, &g_cnt, "KeepDry.tif", labels[record].keepdry, ido
     }
 
     print_boolean_record(fpout,
-                         "ECREP", labels[record].ecrep, "EC Rep.tif", idoc);
+                         "ECREP", labels[record].ecrep, "EC REP_2.tif", idoc);
     print_boolean_record(fpout,
                          "EXPDATE", labels[record].expdate, "Expiration Date.tif", idoc);
     print_boolean_record(fpout,
@@ -1046,7 +1046,7 @@ print_graphic0x_record(fpout, &g_cnt, "KeepDry.tif", labels[record].keepdry, ido
     print_boolean_record(fpout,
                          "REF", labels[record].ref, "REF.tif", idoc);
     print_boolean_record(fpout,
-                         "RXONLY", labels[record].rxonly, "RX Only.tif", idoc);
+                         "RXONLY", labels[record].rxonly, "Rx_only_2.tif", idoc);
     print_boolean_record(fpout,
                          "SERIAL", labels[record].serial, "Serial Number.tif", idoc);
     print_boolean_record(fpout,
